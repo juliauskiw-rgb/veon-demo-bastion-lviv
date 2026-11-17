@@ -1,9 +1,10 @@
 ---
+const B = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL.slice(0, -1) : import.meta.env.BASE_URL;
 // Mission and transparency of the NGO (C-001, C-009, C-025, C-006).
 ---
 <section id="mission" class="mis section on-dark" data-rec="R-018" aria-labelledby="mis-title">
   <div class="container mis__grid">
-    <img class="mis__logo" src="/img/logo-lion-269.webp" width="269" height="400" alt="Знак клубу: лев під трьома вежами" loading="lazy" decoding="async" />
+    <img class="mis__logo" src={`${B}/img/logo-lion-269.webp`} width="269" height="400" alt="Знак клубу: лев під трьома вежами" loading="lazy" decoding="async" />
     <div class="mis__body">
       <h2 id="mis-title" class="mis__title">Наша ціль — здорова і спортивна нація</h2>
       <p class="lead">Клуб веде громадська організація «Спортивний клуб «Сила нації»». Внески йдуть на розвиток залу, дитячий спорт, допомогу ЗСУ і підтримку ветеранів.</p>

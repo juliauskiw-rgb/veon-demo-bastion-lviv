@@ -1,6 +1,7 @@
 ---
 import Icon from "./Icon.astro";
 import { disciplines, phones, address } from "../data/club";
+const B = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL.slice(0, -1) : import.meta.env.BASE_URL;
 const main = phones[0];
 // Wall order: the photo brick sits in row one, the gate in the middle of the wall (inside the fold at 1280×800).
 const bricks = disciplines.map((d) => ({ ...d, tab: d.tabs[0] }));
@@ -44,7 +45,7 @@ const blank = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAI
       ))}
       <li class="wall__item wall__item--photo" aria-hidden="true">
         <picture class="brick brick--photo" style="--i:3" data-rec="R-008,R-009">
-          <source media="(min-width: 1024px)" type="image/webp" srcset="/img/ring-480.webp 480w, /img/ring-800.webp 800w" sizes="30vw" />
+          <source media="(min-width: 1024px)" type="image/webp" srcset={`${B}/img/ring-480.webp 480w, ${B}/img/ring-800.webp 800w`} sizes="30vw" />
           <img src={blank} alt="" width="800" height="370" fetchpriority="high" decoding="async" />
         </picture>
       </li>

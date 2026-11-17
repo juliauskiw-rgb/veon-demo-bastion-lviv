@@ -1,13 +1,14 @@
 ---
 import FutureLink from "./FutureLink.astro";
 import { phones, address, instagram, orgName } from "../data/club";
+const B = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL.slice(0, -1) : import.meta.env.BASE_URL;
 const note = "Розділ у розробці";
 ---
 <footer class="ftr on-dark" data-rec="R-004,R-010">
   <div class="container ftr__grid">
     <div class="ftr__brand">
       <a href="#top" class="ftr__logo" aria-label="Спортивний клуб «Бастіон» — на початок сторінки">
-        <img src="/img/logo-h-240.webp" srcset="/img/logo-h-240.webp 240w, /img/logo-h-480.webp 480w" sizes="192px" width="240" height="85" alt="" loading="lazy" decoding="async" />
+        <img src={`${B}/img/logo-h-240.webp`} srcset={`${B}/img/logo-h-240.webp 240w, ${B}/img/logo-h-480.webp 480w`} sizes="192px" width="240" height="85" alt="" loading="lazy" decoding="async" />
       </a>
       <p class="small muted">Спортивний клуб «Бастіон». Клуб веде {orgName}.</p>
     </div>

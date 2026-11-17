@@ -1,6 +1,7 @@
 ---
 import Icon from "./Icon.astro";
 import { phones } from "../data/club";
+const B = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL.slice(0, -1) : import.meta.env.BASE_URL;
 const nav = [
   { href: "#disciplines", label: "Напрямки" },
   { href: "#membership", label: "Внески" },
@@ -12,7 +13,7 @@ const main = phones[0];
 <header class="hdr on-dark" data-rec="R-002,R-007">
   <div class="hdr__in">
     <a class="hdr__logo" href="#top" aria-label="Спортивний клуб «Бастіон» — на початок сторінки">
-      <img src="/img/logo-h-240.webp" srcset="/img/logo-h-240.webp 240w, /img/logo-h-480.webp 480w" sizes="160px" width="240" height="85" alt="" />
+      <img src={`${B}/img/logo-h-240.webp`} srcset={`${B}/img/logo-h-240.webp 240w, ${B}/img/logo-h-480.webp 480w`} sizes="160px" width="240" height="85" alt="" />
     </a>
     <nav class="hdr__nav" id="site-nav" aria-label="Основна навігація">
       <ul class="hdr__list">

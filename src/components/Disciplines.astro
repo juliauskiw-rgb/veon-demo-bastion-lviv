@@ -1,12 +1,13 @@
 ---
 import { disciplines, tabs, formatLabel, phones } from "../data/club";
+const B = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL.slice(0, -1) : import.meta.env.BASE_URL;
 ---
 <section id="disciplines" class="disc section" data-rec="R-012,R-004" aria-labelledby="disc-title">
   <div class="container disc__grid">
     <figure class="disc__photo" data-rec="R-009">
       <img
-        src="/img/zal-800.webp"
-        srcset="/img/zal-480.webp 480w, /img/zal-800.webp 800w, /img/zal-1080.webp 1080w"
+        src={`${B}/img/zal-800.webp`}
+        srcset={`${B}/img/zal-480.webp 480w, ${B}/img/zal-800.webp 800w, ${B}/img/zal-1080.webp 1080w`}
         sizes="(min-width: 1024px) 40vw, 100vw"
         width="1080" height="500" alt="Дві спортсменки з гантелями в силовому залі клубу" loading="lazy" decoding="async" />
       <figcaption class="small muted">Силовий зал клубу «Бастіон»</figcaption>

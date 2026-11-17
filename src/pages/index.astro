@@ -9,6 +9,7 @@ import Mission from "../components/Mission.astro";
 import FirstVisit from "../components/FirstVisit.astro";
 import Footer from "../components/Footer.astro";
 import { phones, instagram, week } from "../data/club";
+const B = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL.slice(0, -1) : import.meta.env.BASE_URL;
 
 const title = "Бокс, ММА і тренажерний зал на Сихові | Бастіон, Львів";
 const description =
@@ -37,8 +38,8 @@ const jsonLd = {
 ---
 <Base lang="uk" title={title} description={description}>
   <Fragment slot="head">
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <link rel="preload" href="/fonts/fira-sans-extra-condensed-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="icon" type="image/png" href={`${B}/favicon.png`} />
+    <link rel="preload" href={`${B}/fonts/fira-sans-extra-condensed-cyrillic-800-normal.woff2`} as="font" type="font/woff2" crossorigin />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </Fragment>
   <Header slot="header" />
