@@ -1,0 +1,141 @@
+---
+import Icon from "./Icon.astro";
+import { disciplines, phones, address } from "../data/club";
+const main = phones[0];
+// Wall order: the photo brick sits in row one, the gate in the middle of the wall (inside the fold at 1280×800).
+const bricks = disciplines.map((d) => ({ ...d, tab: d.tabs[0] }));
+const first = bricks.slice(0, 3);
+const middle = bricks.slice(3, 5);
+const rest = bricks.slice(5);
+// Phone/tablet wall: rows of two bricks on a 10-column grid, seams alternate 40/60 and 60/40 (running bond).
+const mobile: Record<string, [number, number]> = {
+  boks: [1, 4], "taekvon-do": [2, 6], borotba: [3, 6], mma: [4, 4], grepling: [5, 4],
+  zal: [6, 6], funktsional: [7, 6], krosfit: [8, 4], vazhka: [10, 6],
+};
+const pos = (id: string, i: number) => `--i:${i};--mo:${mobile[id]?.[0] ?? 99};--ms:${mobile[id]?.[1] ?? 5}`;
+const blank = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+---
+<section id="hero" class="hero on-dark" data-rec="R-002,R-008,R-017,R-116" aria-labelledby="hero-title">
+  <div class="hero__top">
+    <h1 id="hero-title" class="hero__title">Єдиноборства і силовий спорт для дітей і дорослих на Сихові</h1>
+    <a class="brama hero__gate-m" href={main.href} data-rec="R-002">
+      <span class="hero__gate-text"><strong>Перше тренування — безкоштовно</strong><span>Зателефонувати {main.label}</span></span>
+      <Icon name="arrow" class="brama__arrow" />
+    </a>
+    <dl class="hero__facts">
+      <div>
+        <dt class="visually-hidden">Адреса</dt>
+        <dd><strong>{address.street}</strong></dd>
+        <dd class="muted">{address.entrance}</dd>
+      </div>
+      <div>
+        <dt class="visually-hidden">Графік</dt>
+        <dd><strong>Пн–Пт 07:30–21:30</strong></dd>
+        <dd class="muted">Сб 08:00–18:00</dd>
+        <dd class="muted">Нд — вихідний</dd>
+      </div>
+    </dl>
+  </div>
+
+  <nav class="wall" aria-label="Дисципліни клубу">
+    <ul class="wall__rows">
+      {first.map((b, i) => (
+        <li class="wall__item" style={pos(b.id, i)}><a class:list={["brick", b.brick.includes(" ") && "brick--long"]} href="#disc-tabs" data-tab={b.tab} data-disc={b.id}>{b.brick}</a></li>
+      ))}
+      <li class="wall__item wall__item--photo" aria-hidden="true">
+        <picture class="brick brick--photo" style="--i:3" data-rec="R-008,R-009">
+          <source media="(min-width: 1024px)" type="image/webp" srcset="/img/ring-480.webp 480w, /img/ring-800.webp 800w" sizes="30vw" />
+          <img src={blank} alt="" width="800" height="370" fetchpriority="high" decoding="async" />
+        </picture>
+      </li>
+      {middle.map((b, i) => (
+        <li class="wall__item" style={pos(b.id, i + 4)}><a class:list={["brick", b.brick.includes(" ") && "brick--long"]} href="#disc-tabs" data-tab={b.tab} data-disc={b.id}>{b.brick}</a></li>
+      ))}
+      <li class="wall__item wall__item--gate">
+        <a class="brama brick-gate" href={main.href} data-rec="R-002">
+          <span class="brick-gate__text"><strong>Перше тренування — безкоштовно</strong><span>Зателефонувати {main.label}</span></span>
+          <Icon name="arrow" class="brama__arrow" />
+        </a>
+      </li>
+      <li class="wall__item wall__item--blank" aria-hidden="true" style="--mo:9;--ms:4"><span class="brick brick--blank"></span></li>
+      {rest.map((b, i) => (
+        <li class="wall__item" style={pos(b.id, i + 6)}><a class:list={["brick", b.brick.includes(" ") && "brick--long"]} href="#disc-tabs" data-tab={b.tab} data-disc={b.id}>{b.brick}</a></li>
+      ))}
+    </ul>
+  </nav>
+</section>
+
+<style>
+  .hero { padding-top: var(--s-6); }
+  .hero__top {
+    display: grid; gap: var(--s-5);
+    width: min(100% - 2 * var(--pad), var(--container)); margin-inline: auto;
+    padding-bottom: var(--s-6);
+  }
+  .hero__title { font-size: var(--fs-h1); line-height: var(--lh-h1); font-weight: 800; max-width: 16ch; }
+  .hero__gate-m { width: 100%; min-height: 3.5rem; justify-content: space-between; text-align: left; }
+  .hero__gate-text, .brick-gate__text { display: grid; gap: var(--s-1); }
+  .hero__gate-text strong { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-lead); line-height: 1.05; }
+  .hero__gate-text span { font-size: var(--fs-small); font-weight: 400; }
+  .hero__facts { display: grid; gap: var(--s-3); font-size: var(--fs-body); line-height: var(--lh-small); }
+  .hero__facts dd { margin: 0; }
+  .hero__facts strong { font-weight: 600; }
+
+  /* The wall: bricks wrap freely, so the seams never line up — like real masonry. */
+  .wall { background: var(--color-seam); padding-top: var(--seam); }
+  .wall__rows { display: flex; flex-wrap: wrap; gap: var(--seam); }
+  .wall__item { flex: 1 1 auto; display: flex; min-width: 0; }
+  .wall__item--photo, .wall__item--gate { display: none; }
+  .brick {
+    flex: 1 1 auto; display: flex; align-items: center; justify-content: center;
+    min-height: var(--tap); padding: var(--s-3);
+    background: var(--color-wall); color: var(--color-text-on-dark); text-decoration: none;
+    font-family: var(--font-display); font-weight: 900; font-size: var(--fs-wall); line-height: var(--lh-wall);
+    text-transform: uppercase; white-space: nowrap;
+    transition: color var(--dur-nudge) var(--ease-out), transform var(--dur-press) var(--ease-out);
+    animation: lay 300ms var(--ease-out) backwards;
+    animation-delay: calc(var(--i, 0) * 40ms);
+  }
+  .brick:hover, .brick:focus-visible { color: var(--color-accent); }
+  .brick:focus-visible { outline-offset: -4px; }
+  .brick:active { transform: scale(.98); }
+  @keyframes lay { from { opacity: 0; } }
+  .brick--blank { animation: none; }
+
+  /* Phone and tablet: rows of two on 10 columns, seams alternate 40/60 and 60/40; long names wrap inside the brick. */
+  @media (max-width: 1023.98px) {
+    .wall__rows { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); }
+    .wall__item { order: var(--mo, 99); grid-column: span var(--ms, 5); }
+    .brick { font-size: var(--fs-wall-m); text-align: center; padding: var(--s-3) var(--s-2); min-height: 4.5rem; }
+    .brick--long { font-size: var(--fs-wall-m-long); }
+  }
+
+  @media (min-width: 768px) {
+    .hero__top { grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); column-gap: var(--gutter); align-items: end; }
+    .hero__title { grid-column: 1; grid-row: 1 / span 2; }
+    .hero__gate-m { grid-column: 2; grid-row: 1; align-self: end; }
+    .hero__facts { grid-column: 2; grid-row: 2; }
+  }
+  @media (min-width: 1024px) {
+    .hero { padding-top: var(--s-5); }
+    .hero__top { grid-template-columns: repeat(12, minmax(0, 1fr)); padding-bottom: var(--s-5); }
+    .hero__title { grid-column: 1 / span 8; grid-row: 1; max-width: none; }
+    .hero__gate-m { display: none; }
+    .hero__facts { grid-column: 9 / span 4; justify-self: end; grid-row: 1; gap: var(--s-4); font-size: var(--fs-lead); }
+    .wall__item--photo, .wall__item--gate { display: flex; }
+    .wall__item--blank { display: none; }
+    .wall__item--photo { flex: 1 1 14rem; }
+    .brick { padding: var(--s-3) var(--s-5); animation-name: lay-up; }
+    .brick--photo { padding: 0; overflow: hidden; }
+    .brick--photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+    .brick-gate { flex: 1 1 auto; justify-content: space-between; gap: var(--s-5); padding-inline: calc(var(--notch) + var(--s-6)); text-align: left; animation: none; }
+    .brick-gate__text strong { font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h2); line-height: 1; }
+    .brick-gate__text span { font-size: var(--fs-body); font-weight: 600; }
+    .brick-gate :global(.brama__arrow) { width: 2rem; height: 2rem; }
+  }
+  @keyframes lay-up { from { opacity: 0; transform: translateY(12px); } }
+  @media (prefers-reduced-motion: reduce) {
+    .brick { animation: none; }
+    .brick:active { transform: none; }
+  }
+</style>

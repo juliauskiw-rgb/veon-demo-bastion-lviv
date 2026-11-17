@@ -1,0 +1,132 @@
+---
+import Icon from "./Icon.astro";
+import { phones } from "../data/club";
+const nav = [
+  { href: "#disciplines", label: "Напрямки" },
+  { href: "#membership", label: "Внески" },
+  { href: "#visit", label: "Графік і вхід" },
+  { href: "#mission", label: "Про клуб" },
+];
+const main = phones[0];
+---
+<header class="hdr on-dark" data-rec="R-002,R-007">
+  <div class="hdr__in">
+    <a class="hdr__logo" href="#top" aria-label="Спортивний клуб «Бастіон» — на початок сторінки">
+      <img src="/img/logo-h-240.webp" srcset="/img/logo-h-240.webp 240w, /img/logo-h-480.webp 480w" sizes="160px" width="240" height="85" alt="" />
+    </a>
+    <nav class="hdr__nav" id="site-nav" aria-label="Основна навігація">
+      <ul class="hdr__list">
+        {nav.map((n) => <li><a class="hdr__link" href={n.href}>{n.label}</a></li>)}
+      </ul>
+      <div class="hdr__menu-extra">
+        <a class="brama" href="#first-visit">Перше тренування</a>
+        <p class="small muted">Телефонуйте: {phones.map((p, i) => <>{i > 0 && ", "}<a class="text-link" href={p.href}>{p.label}</a></>)}</p>
+      </div>
+    </nav>
+    <div class="hdr__actions">
+      <a class="hdr__phone" href={main.href}>
+        <Icon name="phone" class="hdr__phone-icon" />
+        <span class="hdr__phone-num">{main.label}</span>
+        <span class="visually-hidden">— зателефонувати адміністратору</span>
+      </a>
+      <a class="brama hdr__cta" href="#first-visit">Перше тренування</a>
+      <button class="hdr__toggle" type="button" aria-expanded="false" aria-controls="site-nav" hidden>
+        <Icon name="menu" class="hdr__ico-open" />
+        <Icon name="close" class="hdr__ico-close" />
+        <span class="visually-hidden">Меню</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>(".hdr__toggle");
+  const nav = document.getElementById("site-nav");
+  if (btn && nav) {
+    btn.hidden = false;
+    // Everything outside the header is inert while the menu is open (focus stays in the menu).
+    const outside = (): HTMLElement[] =>
+      Array.from(document.querySelectorAll<HTMLElement>("body > *:not(.hdr):not(script)"));
+    const isOpen = () => btn.getAttribute("aria-expanded") === "true";
+    const set = (open: boolean, returnFocus = false) => {
+      btn.setAttribute("aria-expanded", String(open));
+      document.documentElement.classList.toggle("menu-open", open);
+      outside().forEach((el) => { el.inert = open; });
+      if (open) nav.querySelector<HTMLAnchorElement>("a")?.focus();
+      else if (returnFocus) btn.focus();
+    };
+    btn.addEventListener("click", () => set(!isOpen(), true));
+    nav.addEventListener("click", (e) => {
+      if ((e.target as HTMLElement).closest("a") && isOpen()) set(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && isOpen()) set(false, true);
+    });
+    window.matchMedia("(min-width: 1024px)").addEventListener("change", () => { if (isOpen()) set(false); });
+  }
+</script>
+
+<style>
+  .hdr { position: sticky; top: 0; z-index: 50; border-bottom: var(--seam) solid var(--color-seam); }
+  /* Open menu: the header is pinned to the viewport wherever the page was scrolled. */
+  :global(.menu-open) .hdr { position: fixed; inset: 0 0 auto 0; }
+  .hdr__in { display: flex; align-items: center; gap: var(--s-4); height: var(--header-h); width: min(100% - 2 * var(--pad), var(--container)); margin-inline: auto; }
+  .hdr__logo { flex: none; display: block; padding-block: var(--s-1); margin-right: auto; }
+  .hdr__logo img { width: 8.5rem; height: auto; }
+  .hdr__actions { display: flex; align-items: center; gap: var(--s-2); }
+  .hdr__phone { display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2); min-width: var(--tap); min-height: var(--tap); color: var(--color-text-on-dark); text-decoration: none; font-weight: 600; border: var(--seam) solid var(--color-seam); transition: border-color var(--dur-nudge) var(--ease-out); }
+  .hdr__phone:hover { border-color: var(--color-accent); }
+  .hdr__phone :global(.hdr__phone-icon) { width: 1.25rem; height: 1.25rem; }
+  .hdr__phone-num { display: none; }
+  .hdr__cta { display: none; white-space: nowrap; }
+  .hdr__toggle { display: inline-flex; align-items: center; justify-content: center; width: var(--tap); height: var(--tap); padding: 0; background: var(--color-accent); color: var(--color-on-accent); border: 0; cursor: pointer; }
+  .hdr__toggle[hidden] { display: none; }
+  .hdr__toggle :global(svg) { width: 1.5rem; height: 1.5rem; }
+  .hdr__toggle :global(.hdr__ico-close) { display: none; }
+  :global(.menu-open) .hdr__toggle :global(.hdr__ico-open) { display: none; }
+  :global(.menu-open) .hdr__toggle :global(.hdr__ico-close) { display: block; }
+
+  /* Mobile: the nav is a full-screen panel opened by the menu button. Without JS it stays a plain row of anchors. */
+  .hdr__nav { display: none; }
+  :global(html:not(.js)) .hdr__in { flex-wrap: wrap; height: auto; padding-block: var(--s-2); }
+  :global(html:not(.js)) .hdr__nav { display: block; order: 3; width: 100%; }
+  :global(html:not(.js)) .hdr__list { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); }
+  :global(html:not(.js)) .hdr__menu-extra { display: none; }
+  :global(.menu-open) .hdr__nav {
+    display: flex; flex-direction: column; justify-content: space-between; gap: var(--s-6);
+    position: fixed; inset: var(--header-h) 0 0 0; padding: var(--s-6) var(--pad) var(--s-7);
+    background: var(--color-wall); overflow-y: auto;
+  }
+  .hdr__list { display: grid; gap: var(--s-2); }
+  .hdr__link { display: inline-flex; align-items: center; min-height: var(--tap); font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h2); line-height: 1; text-decoration: none; color: var(--color-text-on-dark); }
+  .hdr__link:hover { color: var(--color-accent); }
+  :global(html:not(.js)) .hdr__link { font-family: var(--font-body); font-size: var(--fs-small); font-weight: 600; min-height: 2rem; }
+  .hdr__menu-extra { display: grid; gap: var(--s-4); justify-items: start; }
+  .hdr__menu-extra .brama { min-height: 3.5rem; font-size: var(--fs-lead); }
+
+  @media (min-width: 768px) {
+    .hdr__phone { padding-inline: var(--s-3); }
+    .hdr__phone-num { display: inline; }
+  }
+  @media (min-width: 1024px) {
+    .hdr__in { gap: var(--s-5); }
+    .hdr__link { white-space: nowrap; }
+    .hdr__phone-num { display: none; }
+    .hdr__logo { margin-right: 0; }
+    .hdr__logo img { width: 10rem; }
+    .hdr__toggle, .hdr__toggle:not([hidden]) { display: none; }
+    .hdr__nav, :global(html:not(.js)) .hdr__nav { display: block; position: static; padding: 0; margin-right: auto; width: auto; order: 0; }
+    .hdr__list, :global(html:not(.js)) .hdr__list { display: flex; gap: var(--s-5); }
+    .hdr__link, :global(html:not(.js)) .hdr__link { font-family: var(--font-body); font-size: var(--fs-body); font-weight: 400; min-height: var(--tap); }
+    .hdr__link { text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 2px; text-underline-offset: 0.35em; transition: text-decoration-color var(--dur-nudge) var(--ease-out); }
+    .hdr__link:hover { color: var(--color-text-on-dark); text-decoration-color: var(--color-accent); }
+    .hdr__menu-extra { display: none; }
+    .hdr__phone { border: 0; padding-inline: var(--s-2); }
+    .hdr__phone:hover { color: var(--color-accent); }
+    .hdr__cta { display: inline-flex; }
+  }
+  @media (min-width: 1200px) {
+    .hdr__in { gap: var(--s-6); }
+    .hdr__phone-num { display: inline; }
+  }
+</style>

@@ -1,0 +1,138 @@
+---
+import Icon from "./Icon.astro";
+import { week, address } from "../data/club";
+// Time axis of the bars: 07:00–22:00.
+const START = 7, SPAN = 15;
+const h = (t: string) => { const [hh, mm] = t.split(":").map(Number); return hh + mm / 60; };
+const pct = (x: number) => `${((x / SPAN) * 100).toFixed(3)}%`;
+// Morning card window 07:30–16:00, drawn only where the club is open that day (Sat: 08:00–16:00).
+const band = (open: string, close: string) => {
+  const a = Math.max(h(open), h("07:30")), b = Math.min(h(close), h("16:00"));
+  return b > a ? `--band-left:${pct(a - START)};--band-width:${pct(b - a)}` : "--band-width:0%";
+};
+const ticks = ["07:00", "10:00", "13:00", "16:00", "19:00", "22:00"].map((t) => ({ t, left: pct(h(t) - START) }));
+---
+<section id="visit" class="visit section" data-rec="R-013" aria-labelledby="visit-title">
+  <div class="container visit__grid">
+    <div class="visit__head">
+      <h2 id="visit-title">Відчинено з 07:30</h2>
+      <p class="lead">Шість днів на тиждень, неділя — вихідний.</p>
+    </div>
+
+    <div class="sched">
+      <table class="sched__table" data-draw>
+        <caption class="visually-hidden">Графік роботи клубу по днях тижня</caption>
+        <colgroup><col class="sched__c-day" /><col class="sched__c-time" /><col /></colgroup>
+        <thead>
+          <tr><th scope="col">День</th><th scope="col">Години</th><th scope="col"><span class="visually-hidden">Шкала часу 07:00–22:00</span></th></tr>
+        </thead>
+        <tbody>
+          {week.map((d, i) => (
+            <tr class={d.open ? "" : "is-off"}>
+              <th scope="row"><abbr title={d.full}>{d.day}</abbr></th>
+              <td>{d.open ? `${d.open}–${d.close}` : "вихідний"}</td>
+              <td class="sched__track-cell" aria-hidden="true">
+                <span class="sched__track" style={d.open && d.close ? band(d.open, d.close) : undefined}>
+                  {d.open && d.close && <span class="sched__bar" style={`--l:${pct(h(d.open) - START)};--w:${pct(h(d.close) - h(d.open))};--i:${i}`}></span>}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div class="sched__axis" aria-hidden="true">
+        <span class="sched__axis-pad"></span>
+        <span class="sched__ticks">{ticks.map((t) => <span style={`left:${t.left}`}>{t.t}</span>)}</span>
+      </div>
+      <p class="sched__legend"><span class="sched__swatch" aria-hidden="true"></span><span><strong>07:30–16:00</strong> — ранкова картка «Ранкові фрілансери», 800 грн на місяць</span></p>
+      <p class="small muted">Під час воєнного стану графік може змінюватися.</p>
+    </div>
+
+    <div class="visit__door">
+      <h3 class="visit__door-title">Як знайти вхід</h3>
+      <ol class="route">
+        <li class="route__step"><span class="route__n">1</span><span class="route__text">{address.street}, {address.city}</span></li>
+        <li class="route__step"><span class="route__n">2</span><span class="route__text">Будівля школи №98</span></li>
+        <li class="route__step route__step--gate"><span class="route__n">3</span><span class="route__text">Бічний вхід з вулиці</span></li>
+      </ol>
+      <a class="map-link" href={address.mapHref} target="_blank" rel="noopener">
+        <Icon name="pin" class="map-link__icon" />
+        <span>Відкрити на карті</span>
+        <span class="visually-hidden">(Google Maps, нова вкладка)</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .visit { background: var(--color-surface); }
+  .visit__grid { display: grid; gap: var(--s-7); }
+  .visit__head { display: grid; gap: var(--s-3); }
+
+  .sched { display: grid; gap: var(--s-4); min-width: 0; }
+  .sched__table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .sched__c-day { width: 3rem; }
+  .sched__c-time { width: 7.5rem; }
+  .sched__table thead th { text-align: left; font-size: var(--fs-small); font-weight: 400; color: var(--color-text-muted); padding-bottom: var(--s-2); }
+  .sched__table tbody th, .sched__table tbody td { height: var(--tap); padding: 0; text-align: left; border-top: var(--seam) solid var(--color-bg); }
+  .sched__table tbody th { font-weight: 600; }
+  .sched__table abbr { text-decoration: none; }
+  .sched__table td { font-variant-numeric: tabular-nums; font-weight: 400; }
+  .is-off th, .is-off td { color: var(--color-text-muted); }
+  .is-off .sched__track::before { display: none; }
+  .sched__track-cell { position: relative; }
+  .sched__track { position: absolute; inset: 0; display: block; }
+  .sched__track::before { content: ""; position: absolute; top: 50%; height: var(--s-5); margin-top: calc(-1 * var(--s-5) / 2); left: var(--band-left); width: var(--band-width); background: var(--color-accent); }
+  .sched__bar {
+    position: absolute; top: 50%; left: var(--l); width: var(--w); height: var(--s-3); margin-top: calc(-1 * var(--s-3) / 2);
+    background: var(--color-text); transform-origin: left center;
+    transition: transform var(--dur-bars) var(--ease-out); transition-delay: calc(var(--i, 0) * 50ms);
+  }
+  :global(.js) .sched__table[data-draw]:not(.is-drawn) .sched__bar { transform: scaleX(0); }
+
+  .sched__axis { display: flex; font-size: var(--fs-small); color: var(--color-text-muted); }
+  .sched__axis-pad { flex: none; width: 10.5rem; }
+  .sched__ticks { position: relative; flex: 1; height: 1.25rem; }
+  .sched__ticks span { position: absolute; top: 0; transform: translateX(-50%); }
+  .sched__ticks span:first-child { transform: none; }
+  .sched__ticks span:last-child { transform: translateX(-100%); }
+  .sched__ticks span:nth-child(2n) { display: none; }
+  .sched__legend { display: flex; gap: var(--s-3); align-items: flex-start; }
+  .sched__swatch { flex: none; width: var(--s-5); height: var(--s-5); background: var(--color-accent); margin-top: 0.1em; }
+
+  .visit__door { display: grid; gap: var(--s-5); justify-items: start; }
+  .visit__door-title { font-size: var(--fs-h2); line-height: var(--lh-h2); }
+  .route { display: grid; gap: var(--seam); width: 100%; background: var(--color-text); padding: var(--seam); }
+  .route__step { display: flex; align-items: center; gap: var(--s-4); min-height: 5rem; padding: var(--s-4) var(--s-5); background: var(--color-bg); }
+  .route__n { flex: none; font-family: var(--font-display); font-weight: 900; font-size: var(--fs-h2); line-height: 1; color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+  .route__text { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem); line-height: 1.05; }
+  .route__step--gate { background: var(--color-accent); color: var(--color-on-accent); }
+  .route__step--gate .route__n { color: var(--color-on-accent); }
+  .map-link { display: inline-flex; align-items: center; gap: var(--s-2); min-height: var(--tap); padding: var(--s-2) var(--s-4); border: var(--seam) solid var(--color-text); text-decoration: none; font-weight: 600; transition: background-color var(--dur-nudge) var(--ease-out), color var(--dur-nudge) var(--ease-out); }
+  .map-link:hover { background: var(--color-text); color: var(--color-bg); }
+  .map-link :global(.map-link__icon) { width: 1.25rem; height: 1.25rem; }
+
+  @media (min-width: 768px) {
+    .sched__ticks span:nth-child(2n) { display: inline; }
+    .route { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .route__step { flex-direction: column; align-items: flex-start; justify-content: space-between; min-height: 10rem; }
+  }
+  @media (min-width: 1024px) {
+    .visit__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-8); }
+    .visit__head { grid-column: 1 / span 4; align-content: start; }
+    .sched { grid-column: 5 / span 8; }
+    .visit__door { grid-column: 1 / span 12; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-5); }
+    .visit__door-title { grid-column: 1 / span 4; }
+    .route { grid-column: 5 / span 8; }
+    .map-link { grid-column: 5 / span 8; justify-self: start; }
+    .sched__c-time { width: 9rem; }
+    .sched__axis-pad { width: 12rem; }
+  }
+  @media (max-width: 380px) {
+    .sched__c-time { width: 6.5rem; }
+    .sched__axis-pad { width: 9.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .sched__table[data-draw]:not(.is-drawn) .sched__bar { transform: none; }
+  }
+</style>

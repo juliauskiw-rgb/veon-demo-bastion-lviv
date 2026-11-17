@@ -1,0 +1,67 @@
+---
+import FutureLink from "./FutureLink.astro";
+import { phones, address, instagram, orgName } from "../data/club";
+const note = "Розділ у розробці";
+---
+<footer class="ftr on-dark" data-rec="R-004,R-010">
+  <div class="container ftr__grid">
+    <div class="ftr__brand">
+      <a href="#top" class="ftr__logo" aria-label="Спортивний клуб «Бастіон» — на початок сторінки">
+        <img src="/img/logo-h-240.webp" srcset="/img/logo-h-240.webp 240w, /img/logo-h-480.webp 480w" sizes="192px" width="240" height="85" alt="" loading="lazy" decoding="async" />
+      </a>
+      <p class="small muted">Спортивний клуб «Бастіон». Клуб веде {orgName}.</p>
+    </div>
+    <div class="ftr__col">
+      <h2 class="ftr__h">Адреса</h2>
+      <p>{address.city}, {address.street}</p>
+      <p class="muted">Вхід з вулиці, збоку школи №98</p>
+      <a class="text-link" href={address.mapHref} target="_blank" rel="noopener">Відкрити на карті<span class="visually-hidden"> (Google Maps, нова вкладка)</span></a>
+    </div>
+    <div class="ftr__col">
+      <h2 class="ftr__h">Графік</h2>
+      <p>Пн–Пт 07:30–21:30</p>
+      <p>Сб 08:00–18:00</p>
+      <p class="muted">Нд — вихідний</p>
+    </div>
+    <div class="ftr__col">
+      <h2 class="ftr__h">Зв'язок</h2>
+      <ul class="ftr__list">
+        {phones.map((p) => <li><a class="ftr__tel" href={p.href}>{p.label}</a> <span class="muted small">{p.who}</span></li>)}
+        <li data-rec="S-R008"><a class="text-link" href={instagram.href} target="_blank" rel="noopener">Instagram {instagram.handle}<span class="visually-hidden"> (нова вкладка)</span></a></li>
+      </ul>
+    </div>
+    <div class="ftr__col">
+      <h2 class="ftr__h">Більше про клуб</h2>
+      <ul class="ftr__list">
+        <li><FutureLink note={note}>Розклад груп</FutureLink></li>
+        <li><FutureLink note={note}>Тренери</FutureLink></li>
+        <li><FutureLink note={note}>Правила клубу</FutureLink></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ftr { padding-block: var(--s-8) var(--s-7); border-top: var(--seam) solid var(--color-seam); }
+  .ftr__grid { display: grid; gap: var(--s-6); grid-template-columns: minmax(0, 1fr); }
+  .ftr__brand { display: grid; gap: var(--s-4); }
+  .ftr__logo { display: inline-block; justify-self: start; }
+  .ftr__logo img { width: 12rem; height: auto; }
+  .ftr__col { display: grid; gap: var(--s-1); align-content: start; justify-items: start; }
+  .ftr__h { font-family: var(--font-body); font-size: var(--fs-small); line-height: var(--lh-small); font-weight: 400; color: var(--color-text-muted-on-dark); margin-bottom: var(--s-2); }
+  .ftr__list { display: grid; gap: var(--s-2); }
+  .ftr__tel { display: inline-flex; align-items: center; min-height: 1.5rem; font-weight: 600; text-decoration: none; }
+  .ftr__tel:hover { color: var(--color-accent); }
+  @media (min-width: 768px) {
+    .ftr__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ftr__brand { grid-column: 1 / -1; }
+  }
+  @media (min-width: 1024px) {
+    .ftr__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); }
+    .ftr__brand { grid-column: 1 / span 4; }
+    .ftr__col:nth-child(2) { grid-column: 5 / span 2; }
+    .ftr__col:nth-child(3) { grid-column: 7 / span 2; }
+    .ftr__col:nth-child(4) { grid-column: 9 / span 2; }
+    .ftr__col:nth-child(5) { grid-column: 11 / span 2; }
+  }
+</style>

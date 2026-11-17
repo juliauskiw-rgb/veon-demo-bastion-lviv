@@ -1,0 +1,52 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Disciplines from "../components/Disciplines.astro";
+import Membership from "../components/Membership.astro";
+import Visit from "../components/Visit.astro";
+import Mission from "../components/Mission.astro";
+import FirstVisit from "../components/FirstVisit.astro";
+import Footer from "../components/Footer.astro";
+import { phones, instagram, week } from "../data/club";
+
+const title = "Бокс, ММА і тренажерний зал на Сихові | Бастіон, Львів";
+const description =
+  "Єдиноборства і силовий спорт для дітей і дорослих: бокс, ММА, таеквон-до, боротьба, кросфіт. Клубна картка від 700 грн. Трильовського, 12, з 07:30.";
+
+const dayCode: Record<string, string> = { Пн: "Monday", Вт: "Tuesday", Ср: "Wednesday", Чт: "Thursday", Пт: "Friday", Сб: "Saturday" };
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SportsActivityLocation",
+  name: "Спортивний клуб «Бастіон»",
+  description,
+  telephone: phones.map((p) => p.href.replace("tel:", "")),
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "вул. Трильовського, 12",
+    addressLocality: "Львів",
+    addressCountry: "UA",
+  },
+  openingHoursSpecification: [
+    { "@type": "OpeningHoursSpecification", dayOfWeek: week.filter((d) => d.open === "07:30").map((d) => dayCode[d.day]), opens: "07:30", closes: "21:30" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Saturday"], opens: "08:00", closes: "18:00" },
+  ],
+  priceRange: "700–900 грн / міс",
+  sameAs: [instagram.href],
+};
+---
+<Base lang="uk" title={title} description={description}>
+  <Fragment slot="head">
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preload" href="/fonts/fira-sans-extra-condensed-cyrillic-800-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </Fragment>
+  <Header slot="header" />
+  <Hero />
+  <Disciplines />
+  <Membership />
+  <Visit />
+  <Mission />
+  <FirstVisit />
+  <Footer slot="footer" />
+</Base>

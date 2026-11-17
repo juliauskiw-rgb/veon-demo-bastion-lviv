@@ -1,0 +1,78 @@
+---
+// Prices and card terms as text (C-005, C-006, C-007) — replaces the price poster image (C-013).
+const fees = [
+  { value: "900", unit: "грн / міс", who: "Дорослі" },
+  { value: "700", unit: "грн / міс", who: "До 18 років" },
+  { value: "800", unit: "грн / міс", who: "«Ранкові фрілансери» — відвідування з 07:30 до 16:00" },
+];
+const terms = [
+  "Картка діє місяць, до 25 відвідувань",
+  "Активувати картку потрібно протягом 14 днів",
+  "Заморожування на 7 днів — 100 грн",
+  "Потрібна медична довідка",
+  "Внески не повертаються",
+];
+---
+<section id="membership" class="mem section on-dark" data-rec="R-006,R-018" aria-labelledby="mem-title">
+  <div class="container mem__grid">
+    <div class="mem__head">
+      <h2 id="mem-title">Клубна картка — 900 грн на місяць</h2>
+      <p class="muted small">Ціни 2026 року. Внески громадської організації, що веде клуб.</p>
+    </div>
+
+    <ul class="fees">
+      {fees.map((f) => (
+        <li class="fee">
+          <span class="fee__num"><span class="fee__value">{f.value}</span><span class="fee__unit">{f.unit}</span></span>
+          <span class="fee__who">{f.who}</span>
+        </li>
+      ))}
+      <li class="fee fee--word">
+        <span class="fee__num"><span class="fee__value fee__value--word">добровільний внесок</span></span>
+        <span class="fee__who">Діючі військові та власники посвідчення УБД</span>
+      </li>
+    </ul>
+
+    <div class="mem__side">
+      <p class="mem__entry"><span class="mem__entry-num">200 грн</span> вступний внесок, разово</p>
+      <h3 class="mem__terms-title">Умови клубної картки</h3>
+      <ul class="terms">
+        {terms.map((t) => <li>{t}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mem__grid { display: grid; gap: var(--s-7); }
+  .mem__head { display: grid; gap: var(--s-3); }
+  .mem__head h2 { max-width: 14ch; }
+
+  .fees { display: grid; }
+  .fee { display: grid; gap: var(--s-2); padding-block: var(--s-5); border-top: var(--seam) solid var(--color-seam); }
+  .fee:last-child { border-bottom: var(--seam) solid var(--color-seam); }
+  .fee__num { display: flex; align-items: baseline; flex-wrap: wrap; gap: var(--s-3); color: var(--color-accent); }
+  .fee__value { font-family: var(--font-display); font-weight: 900; font-size: var(--fs-price); line-height: var(--lh-price); font-variant-numeric: tabular-nums; }
+  .fee__value--word { font-size: var(--fs-h2); line-height: var(--lh-h2); font-weight: 800; }
+  .fee__unit { font-weight: 600; font-size: var(--fs-lead); }
+  .fee__who { font-size: var(--fs-lead); line-height: 1.35; max-width: 28ch; }
+
+  .mem__side { display: grid; gap: var(--s-4); align-content: start; }
+  .mem__entry { font-size: var(--fs-lead); }
+  .mem__entry-num { display: block; font-family: var(--font-display); font-weight: 800; font-size: var(--fs-h2); line-height: 1; color: var(--color-accent); margin-right: var(--s-2); }
+  .mem__terms-title { font-size: var(--fs-lead); line-height: 1.2; margin-top: var(--s-4); }
+  .terms { display: grid; gap: var(--s-2); color: var(--color-text-muted-on-dark); }
+  .terms li { padding-left: var(--s-5); position: relative; }
+  .terms li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: var(--s-3); height: var(--seam); background: var(--color-text-muted-on-dark); }
+
+  @media (min-width: 768px) {
+    .fee { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); column-gap: var(--gutter); align-items: center; }
+  }
+  @media (min-width: 1024px) {
+    .mem__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: var(--s-8); }
+    .mem__head { grid-column: 1 / span 12; }
+    .mem__head h2 { max-width: none; }
+    .fees { grid-column: 1 / span 8; }
+    .mem__side { grid-column: 10 / span 3; position: sticky; top: calc(var(--header-h) + var(--s-6)); }
+  }
+</style>
